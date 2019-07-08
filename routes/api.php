@@ -17,6 +17,8 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function ($router) {
     $router->get('/product', 'ProductController@index');
     $router->get('/product/count', 'ProductController@productCount');
     $router->get('/product/{id}', 'ProductController@show');
+    $router->delete('/product/{id}', 'ProductController@delete');
+
     $router->get('/brands', 'ProductController@brands');
     $router->get('/meta_keys', 'ProductController@meta_keys');
 

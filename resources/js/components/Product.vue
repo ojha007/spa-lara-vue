@@ -84,7 +84,7 @@
                                                @click.prevent="editModal(product)"></i>
                                             &nbsp;&nbsp;&nbsp;
                                             <i class="fa fa-trash red" title="Delete"
-                                               @click.prevent="deleteProduct(product.slug)"></i>
+                                               @click.prevent="deleteProduct(product.id)"></i>
 
                                         </div>
 
@@ -93,10 +93,10 @@
                                 </tr>
                                 <div style="overflow: auto;">
                                     <infinite-loading
-                                        :identifier="changeProduct"
-                                        @distance="100"
-                                        @infinite="infiniteHandler"
-                                        force-use-infinite-wrapper="true"></infinite-loading>
+                                            :identifier="changeProduct"
+                                            @distance="100"
+                                            @infinite="infiniteHandler"
+                                            force-use-infinite-wrapper="true"></infinite-loading>
                                 </div>
 
 
@@ -143,7 +143,7 @@
                                             <div class="form-group">
                                                 <label for="selectBrand"></label>
                                                 <select name="meta_value" id="selectBrand"
-                                                        class="form-control"  v-model="form.brand_id" required>
+                                                        class="form-control" v-model="form.brand_id" required>
                                                     <option :value="brand.id"
                                                             :key="brand.id"
 
@@ -245,8 +245,8 @@
                 page: 1,
                 form: new Form({
                     name: '',
-                    brand_id:'',
-                    product_meta_key:''
+                    brand_id: '',
+                    product_meta_key: ''
                 }),
                 selectBrands: [],
                 selectMetaKeys: [],
@@ -279,8 +279,8 @@
                 this.page = this.page + 1;
             },
             storeProduct() {
-                     // axios.post('api/v1/product',this.form)
-                     console.log(this.form);
+                // axios.post('api/v1/product',this.form)
+                console.log(this.form);
 
             },
             productDetail(product) {
@@ -289,7 +289,7 @@
                         this.brand = res.data.brand;
                         this.meta_values = res.data.meta_value;
                         this.product = res.data.name;
-                        console.log(res.data);
+
                         $('#product-detail').modal('show')
                     })
             },
@@ -306,7 +306,7 @@
                 axios.get('api/v1/meta_keys')
                     .then(res => {
                         this.selectMetaKeys = res.data;
-                        this.form.product_meta_key=res.data;
+                        this.form.product_meta_key = res.data;
                     })
                     .catch(err => {
                         console.log(err);
@@ -320,7 +320,7 @@
                 $('#addProduct').modal('show');
                 this.form.fill(product);
             },
-            deleteProduct(slug) {
+            deleteProduct(id) {
                 SwalDeleteAlert.fire({
                     title: 'Are you sure?',
                     text: "You won't be able to revert this!",
@@ -331,10 +331,10 @@
                     reverseButtons: true
                 }).then((result) => {
                     if (result.value) {
-                        axios.delete('/api/v1/blog/'+ slug).then(res => {
+                        axios.delete('/api/v1/product/' + id).then(res => {
                             this.$Progress.start();
-                            let index = this.blogs.findIndex(item => item.slug === slug);
-                            this.blogs.splice(index, 1);
+                            let index = this.products.findIndex(item => item.id === id);
+                            this.products.splice(index, 1);
                             SwalDeleteAlert.fire(
                                 'Deleted!',
                                 'Your file has been deleted.',

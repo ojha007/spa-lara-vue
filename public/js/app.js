@@ -2166,29 +2166,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Dashboard",
   data: function data() {
     return {
-      rows: [],
-      data: {
-        title: '',
-        description: '',
-        author: ''
-      },
+      rows: [{
+        title: ''
+      }],
       count: 0
     };
   },
@@ -2211,9 +2195,7 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     addNewRow: function addNewRow() {
       this.rows.push({
-        title: '',
-        description: '',
-        author: ''
+        title: ''
       });
     },
     removeRow: function removeRow(index) {
@@ -2592,7 +2574,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.brand = res.data.brand;
         _this.meta_values = res.data.meta_value;
         _this.product = res.data.name;
-        console.log(res.data);
         $('#product-detail').modal('show');
       });
     },
@@ -2622,7 +2603,7 @@ __webpack_require__.r(__webpack_exports__);
       $('#addProduct').modal('show');
       this.form.fill(product);
     },
-    deleteProduct: function deleteProduct(slug) {
+    deleteProduct: function deleteProduct(id) {
       var _this4 = this;
 
       SwalDeleteAlert.fire({
@@ -2635,14 +2616,14 @@ __webpack_require__.r(__webpack_exports__);
         reverseButtons: true
       }).then(function (result) {
         if (result.value) {
-          axios["delete"]('/api/v1/blog/' + slug).then(function (res) {
+          axios["delete"]('/api/v1/product/' + id).then(function (res) {
             _this4.$Progress.start();
 
-            var index = _this4.blogs.findIndex(function (item) {
-              return item.slug === slug;
+            var index = _this4.products.findIndex(function (item) {
+              return item.id === id;
             });
 
-            _this4.blogs.splice(index, 1);
+            _this4.products.splice(index, 1);
 
             SwalDeleteAlert.fire('Deleted!', 'Your file has been deleted.', 'success');
 
@@ -30870,128 +30851,79 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
-    this.count > 0
-      ? _c("div", { staticClass: "row" }, [
-          _c("table", { staticClass: "table" }, [
-            _vm._m(0),
-            _vm._v(" "),
-            _c("tbody", [
-              _c(
-                "tr",
-                _vm._l(_vm.data, function(d) {
-                  return _c("td", { key: d.id }, [_vm._v(_vm._s(d.title))])
-                }),
-                0
-              )
-            ])
-          ])
-        ])
-      : _vm._e(),
-    _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: " col-md-12 text-center" }, [
+      _c("div", { staticClass: " col-md-4 text-center col-md-offset-1" }, [
         _c(
           "div",
-          { staticClass: "form-inline mb-2 mt2" },
-          _vm._l(_vm.rows, function(index, row) {
+          { staticClass: "form mb-2 mt2" },
+          _vm._l(_vm.rows, function(row, index) {
             return _c("div", { staticClass: "form-group mb-5" }, [
-              _c("label", { attrs: { for: "title" } }, [_vm._v("Title")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: row.title,
-                    expression: "row.title"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", name: "title", id: "title" },
-                domProps: { value: row.title },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
+              _c("div", { staticClass: "card" }, [
+                _c("div", { staticClass: "card-body" }, [
+                  _c("label", { attrs: { for: "title" } }, [_vm._v("Title")]),
+                  _vm._v(" "),
+                  _c("input", {
+                    directives: [
+                      {
+                        name: "model",
+                        rawName: "v-model",
+                        value: row.title,
+                        expression: "row.title"
+                      }
+                    ],
+                    staticClass: "form-control",
+                    attrs: {
+                      type: "text",
+                      name: "title",
+                      id: "title",
+                      placeholder: "Add Row"
+                    },
+                    domProps: { value: row.title },
+                    on: {
+                      input: function($event) {
+                        if ($event.target.composing) {
+                          return
+                        }
+                        _vm.$set(row, "title", $event.target.value)
+                      }
                     }
-                    _vm.$set(row, "title", $event.target.value)
-                  }
-                }
-              }),
-              _vm._v("\n                       \n                    "),
-              _c("label", { attrs: { for: "description" } }, [
-                _vm._v("Description")
-              ]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: row.description,
-                    expression: "row.description"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", name: "description", id: "description" },
-                domProps: { value: row.description },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(row, "description", $event.target.value)
-                  }
-                }
-              }),
-              _vm._v("\n                       \n                    "),
-              _c("label", { attrs: { for: "author" } }, [_vm._v("Author")]),
-              _vm._v(" "),
-              _c("input", {
-                directives: [
-                  {
-                    name: "model",
-                    rawName: "v-model",
-                    value: row.author,
-                    expression: "row.author"
-                  }
-                ],
-                staticClass: "form-control",
-                attrs: { type: "text", name: "author", id: "author" },
-                domProps: { value: row.author },
-                on: {
-                  input: function($event) {
-                    if ($event.target.composing) {
-                      return
-                    }
-                    _vm.$set(row, "author", $event.target.value)
-                  }
-                }
-              }),
-              _vm._v("\n                       \n                    "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-success float-right",
-                  attrs: { type: "submit" }
-                },
-                [_vm._v("Send")]
-              ),
-              _vm._v("\n                     \n                    "),
-              _c(
-                "button",
-                {
-                  staticClass: "btn btn-primary float-right",
-                  attrs: { type: "submit" },
-                  on: {
-                    click: function($event) {
-                      $event.preventDefault()
-                      return _vm.removeRow(index)
-                    }
-                  }
-                },
-                [_vm._v("Remove Row\n                    ")]
-              )
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "card-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-success float-left",
+                        attrs: { type: "submit" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                                        Add\n                                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary float-right",
+                        attrs: { type: "submit" },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.removeRow(index)
+                          }
+                        }
+                      },
+                      [
+                        _vm._v(
+                          "Remove Row\n                                    "
+                        )
+                      ]
+                    )
+                  ])
+                ])
+              ])
             ])
           }),
           0
@@ -31018,13 +30950,13 @@ var render = function() {
             _c("p", [_vm._v("Total Products")])
           ]),
           _vm._v(" "),
-          _vm._m(1),
+          _vm._m(0),
           _vm._v(" "),
-          _vm._m(2)
+          _vm._m(1)
         ])
       ]),
       _vm._v(" "),
-      _vm._m(3),
+      _vm._m(2),
       _vm._v(" "),
       _c("div", { staticClass: "col-lg-3 col-6" }, [
         _c(
@@ -31037,7 +30969,7 @@ var render = function() {
               _c("p", [_vm._v("Total User")])
             ]),
             _vm._v(" "),
-            _vm._m(4),
+            _vm._m(3),
             _vm._v(" "),
             _c(
               "router-link",
@@ -31063,7 +30995,7 @@ var render = function() {
               _c("p", [_vm._v("Blog")])
             ]),
             _vm._v(" "),
-            _vm._m(5),
+            _vm._m(4),
             _vm._v(" "),
             _c(
               "router-link",
@@ -31081,20 +31013,6 @@ var render = function() {
   ])
 }
 var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c("th", [_vm._v("Title")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Description")]),
-        _vm._v(" "),
-        _c("th", [_vm._v("Author")])
-      ])
-    ])
-  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -31466,7 +31384,7 @@ var render = function() {
                                     on: {
                                       click: function($event) {
                                         $event.preventDefault()
-                                        return _vm.deleteProduct(product.slug)
+                                        return _vm.deleteProduct(product.id)
                                       }
                                     }
                                   })
@@ -49708,8 +49626,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\project\lara-vue\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\project\lara-vue\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\project\spa-lara-vue\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\project\spa-lara-vue\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
