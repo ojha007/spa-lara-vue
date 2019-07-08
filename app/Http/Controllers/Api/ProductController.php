@@ -16,9 +16,9 @@ class ProductController extends Controller
     {
 
         if ($request->tags == 2) {
-            $product= Product::with('brand')->orderBy('availability');
+            $product = Product::with('brand')->orderBy('availability');
         }
-        $product= Product::with('brand')->paginate(20);
+        $product = Product::with('brand')->paginate(20);
         return response()->json($product);
     }
 
@@ -48,5 +48,13 @@ class ProductController extends Controller
     {
         $meta_keys = ProductMetaKey::all();
         return response()->json($meta_keys);
+    }
+
+    public function delete($id)
+    {
+        Product::findOrfail($id)->delete();
+        return response()->json([
+            'message' => 'Success'
+        ], 200);
     }
 }

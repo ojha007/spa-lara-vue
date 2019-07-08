@@ -1,44 +1,31 @@
 <template>
     <div class="container">
-        <div class="row" v-if="this.count > 0">
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Author</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td v-for="d in data" :key="d.id">{{d.title}}</td>
-                </tr>
-
-                </tbody>
-            </table>
-        </div>
         <div class="row">
-            <div class=" col-md-12 text-center">
-                <div class="form-inline mb-2 mt2">
-                    <div class="form-group mb-5" v-for="(index ,row) in rows">
-                        <label for="title">Title</label>
-                        <input type="text" name="title" class="form-control" id="title" v-model="row.title">
-                        &nbsp; &nbsp;
-                        <label for="description">Description</label>
-                        <input type="text" name="description" class="form-control" id="description"
-                               v-model="row.description">
-                        &nbsp; &nbsp;
-                        <label for="author">Author</label>
-                        <input type="text" name="author" class="form-control" id="author" v-model="row.author">
-                        &nbsp; &nbsp;
-                        <button type="submit" class="btn btn-success float-right">Send</button>
-                        &nbsp;
-                        <button type="submit" class="btn btn-primary float-right"
-                                @click.prevent="removeRow(index)">Remove Row
-                        </button>
+            <div class=" col-md-4 text-center col-md-offset-1">
+                <div class="form mb-2 mt2">
+                    <div class="form-group mb-5" v-for="(row,index) in rows">
+                        <div class="card">
+                            <div class="card-body">
+                                    <label for="title">Title</label>
+                                    <input type="text" name="title"
+                                           class="form-control" id="title"
+                                           placeholder="Add Row"
+                                           v-model="row.title">
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-success float-left"
+                                         >
+                                            Add
+                                        </button>
+                                        <button type="submit" class="btn btn-primary float-right"
+                                                @click.prevent="removeRow(index)">Remove Row
+                                        </button>
+                                    </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <button type="submit" class="btn btn-warning mb-2 float-left" @click="addNewRow">Add New Row</button>
+                <button type="submit" class="btn btn-warning mb-2 float-left"
+                        @click="addNewRow">Add New Row</button>
             </div>
         </div>
         <div class="row">
@@ -83,8 +70,8 @@
                         <i class="ion ion-person-add"></i>
                     </div>
                     <router-link
-                        to="/user"
-                        class="small-box-footer"
+                            to="/user"
+                            class="small-box-footer"
 
                     >
                         More info
@@ -122,12 +109,11 @@
         name: "Dashboard",
         data() {
             return {
-                rows: [],
-                data: {
-                    title: '',
-                    description: '',
-                    author: '',
-                },
+                rows: [
+                    {
+                        title: '',
+                    }
+                ],
                 count: 0,
             }
 
@@ -155,14 +141,13 @@
             addNewRow() {
                 this.rows.push({
                     title: '',
-                    description: '',
-                    author: '',
                 })
-
             },
             removeRow(index) {
                 this.rows.splice(index, 1);
-            }
+            },
+
+
         }
 
 
