@@ -64,6 +64,17 @@
                     </router-link>
 
                 </li>
+                <li class="nav-item">
+                    <router-link
+                        to="/brand"
+                        class="nav-link">
+                        <i class="nav-icon fab fa-product-hunt"></i>
+                        <p>
+                            Brands
+                        </p>
+                    </router-link>
+
+                </li>
 
                 <li class="nav-item">
                     <router-link to="/login" class="nav-link">

@@ -13,6 +13,12 @@
                     </button>
                 </div>
             </div>
+            <br>
+              <div class="card-action">
+                  <button  class="btn btn-primary ml-4" @click.prevent="activeBlogs">
+                      <i class="fa fa-edit">Active Blogs </i>
+                  </button>
+              </div>
             <div class="card-body">
                 <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
 
@@ -105,13 +111,13 @@
                     <div class="modal-header">
                         <h5 class="modal-title">
                             <i class="fa fa-plus-circle"></i>
-                            Add New Blog
+                            {{editMode ? 'Update' :'Add'}} Blog
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="storeBlog">
+                    <form @submit.prevent="editMode ? updateBlog():addBlog ()">
                         <div class="modal-body">
                             <div class="container-fluid">
                                 <alert-error :form="form"></alert-error>
@@ -164,7 +170,7 @@
                                 <i class="fa fa-close"></i> Close
                             </button>
                             <button type="submit" :disabled="form.busy" class="btn btn-success">
-                                <i class="fa fa-save"></i> Save
+                                <i class="fa fa-save"></i> {{editMode ? 'Update ':'Add' }}
                             </button>
                         </div>
                     </form>
@@ -193,7 +199,7 @@
             return {
                 blogs: [],
                 page: 1,
-
+                editMode: true,
                 form: new Form({
                     title: '',
                     content: '',
@@ -205,18 +211,20 @@
             }
         },
         methods: {
+            updateBlog() {
 
-            storeBlog() {
+            },
+            addBlog() {
                 let formData = new FormData();
                 formData.append('featured_image', this.featured_image);
                 axios.post('api/v1/blog', this.form)
                     .then(res => {
                         this.$Progress.start();
                         let payload = {
-                            title:this.form.title,
+                            title: this.form.title,
                             featured_image: this.form.featured_image,
                             status: this.form.status,
-                            content: this.form.content.substr(0,100),
+                            content: this.form.content.substr(0, 100),
                         };
                         console.log(payload);
                         // this.blogs.push(payload);
@@ -243,12 +251,14 @@
 
             },
             newModal() {
+                this.editMode = false;
                 this.form.reset();
                 $('#addBlogModel').modal('show');
 
 
             },
             editModal(slug) {
+                this.editMode=true;
                 this.form.fill(slug);
                 $('#addBlogModel').modal('show');
 
@@ -302,6 +312,10 @@
                         }
                     });
             },
+            activeBlogs(){
+                  return this.blogs.filter(data =>data.status===1);
+
+            }
         },
         mounted() {
             this.$store.dispatch('fetchBlog');
