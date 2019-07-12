@@ -3,8 +3,6 @@
     import Dashboard from '../components/Dashboard';
     import Product from "../components/Product";
     import Blog from "../components/Blog";
-    import Login from "../components/Login";
-    import Register from "../components/Register";
 
     const routes = [
         {
@@ -23,15 +21,6 @@
         {
             path: '/blog',
             component: Blog
-        },
-
-        {
-            path: '/login',
-            component: Login
-        },
-        {
-            path: '/register',
-            component: Register
         },
 
 

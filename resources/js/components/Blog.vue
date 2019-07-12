@@ -8,7 +8,7 @@
                 <div class="card-tools float-right">
                     <button class="btn btn-success" @click.prevent="newModal"
                     >
-                        <i class="fa fa-user-plus"></i>
+                        <i class="fa fa-plus"></i>
                         Add Blog
                     </button>
                 </div>
@@ -82,10 +82,10 @@
 
                                 </tr>
                                 <infinite-loading
-                                    spinner="spiral"
-                                    @distance="100"
-                                    force-use-infinite-wrapper="true"
-                                    @infinite=" infiniteHandler ">
+                                        spinner="spiral"
+                                        @distance="100"
+                                        force-use-infinite-wrapper="true"
+                                        @infinite=" infiniteHandler ">
                                     <span slot="no-more"></span>
                                 </infinite-loading>
 
@@ -104,14 +104,14 @@
                 <div class="modal-content modal-margin-left">
                     <div class="modal-header">
                         <h5 class="modal-title">
-                            <i class="fa fa-plus-circle"></i>
-                            Add New Blog
+                            <i class="fa fa-plus"></i>
+                            {{editMode ? 'Update' :'Add New'}} Blog
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="storeBlog">
+                    <form @submit.prevent="editMode ? updateBlog(): addBlog()">
                         <div class="modal-body">
                             <div class="container-fluid">
                                 <alert-error :form="form"></alert-error>
@@ -164,7 +164,7 @@
                                 <i class="fa fa-close"></i> Close
                             </button>
                             <button type="submit" :disabled="form.busy" class="btn btn-success">
-                                <i class="fa fa-save"></i> Save
+                                <i class="fa fa-save"></i> {{editMode ? 'Update' :'save'}}
                             </button>
                         </div>
                     </form>
@@ -193,30 +193,46 @@
             return {
                 blogs: [],
                 page: 1,
-
+                editMode: true,
                 form: new Form({
+                    id: '',
                     title: '',
                     content: '',
                     featured_image: '',
                     status: '',
                 }),
-                editor: ClassicEditor,
-                editorConfig: {}
+                editor:
+                ClassicEditor,
+                editorConfig:
+                    {}
             }
         },
         methods: {
+            newModal() {
+                this.editMode = false;
+                this.form.reset();
+                $('#addBlogModel').modal('show');
 
-            storeBlog() {
+
+            },
+            editModal(slug) {
+                this.editMode = true;
+                this.form.fill(slug);
+                $('#addBlogModel').modal('show');
+
+
+            },
+            addBlog() {
                 let formData = new FormData();
                 formData.append('featured_image', this.featured_image);
                 axios.post('api/v1/blog', this.form)
                     .then(res => {
                         this.$Progress.start();
                         let payload = {
-                            title:this.form.title,
+                            title: this.form.title,
                             featured_image: this.form.featured_image,
                             status: this.form.status,
-                            content: this.form.content.substr(0,100),
+                            content: this.form.content.substr(0, 100),
                         };
                         console.log(payload);
                         // this.blogs.push(payload);
@@ -242,17 +258,24 @@
                     })
 
             },
-            newModal() {
-                this.form.reset();
-                $('#addBlogModel').modal('show');
-
-
-            },
-            editModal(slug) {
-                this.form.fill(slug);
-                $('#addBlogModel').modal('show');
-
-
+            updateBlog() {
+                this.form.put('api/v1/blog/' + this.form.id)
+                    .then(res => {
+                        this.$Progress.start();
+                        $('#addBlogModel').modal('hide');
+                        this.$Progress.finish();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'Blog Updated successfully'
+                        });
+                    })
+                    .catch(err => {
+                        Toast.fire({
+                            type: 'error',
+                            title: 'Something went wrong '
+                        });
+                        this.$Progress.fail();
+                    })
             },
             deleteBlog(slug) {
                 SwalDeleteAlert.fire({

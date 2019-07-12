@@ -53,7 +53,11 @@
                         <button class="btn  btn-primary btn-block" type="submit">
                             Register
                         </button>
+
                         <a href="#" class="float-right">Need help?</a>
+                        <a href="{{route('showLoginForm')}}" class="float-left">
+                            Already have an account ?
+                        </a>
                     </form>
                 </div>
             </div>

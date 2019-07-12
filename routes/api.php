@@ -13,6 +13,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function ($router) {
     $router->post('/user', 'UserController@store');
     $router->delete('/user/{id}', 'UserController@delete');
     $router->get('/user/role', 'RoleController@index');
+    $router->put('/user/{id}', 'UserController@update');
 
     $router->get('/product', 'ProductController@index');
     $router->get('/product/count', 'ProductController@productCount');
@@ -25,6 +26,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function ($router) {
     $router->delete('/blog/{slug}', 'BlogController@delete');
     $router->get('/blogs', 'BlogController@index');
     $router->get('/blog/count', 'BlogController@blogCount');
+    $router->put('/blog/{id}', 'BlogController@update');
 
     $router->group(['prefix' => 'blog'], function ($blog) {
         $blog->post('/', 'BlogController@store');
@@ -33,13 +35,3 @@ Route::group(['prefix' => 'v1', 'namespace' => 'Api'], function ($router) {
 
 });
 
-Route::group([
-    'middleware' => 'jwt.auth',
-    'prefix' => 'v1',
-    'namespace' => 'Api'
-
-], function ($router) {
-    $router->post('/register', 'AuthenticationController@register');
-    $router->post('/login', 'AuthenticationController@login');
-    $router->post('/logout', 'AuthenticationController@logout');
-});

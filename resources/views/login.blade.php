@@ -25,6 +25,7 @@
                 </div>
                 <div class="card-body">
                     <form class="form-group" action="{{route('login')}}" method="post">
+                        @csrf
                         <label for="email">Email </label>
                         <input type="email"
                                class="form-control"

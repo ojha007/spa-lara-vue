@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Models\Blog;
+use function GuzzleHttp\Promise\all;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -60,5 +61,27 @@ class BlogController extends Controller
             'status' => Response::HTTP_CREATED,
             'message' => 'Created SuccessFully !'
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $blog = Blog::findOrfail($id);
+        $request->validate([
+            'title' => 'required|max:191|unique:blogs,title,' . $blog->id,
+            'content' => 'required',
+            'status' => 'required',
+        ]);
+
+        $blog->update(
+            [
+                'slug' =>str_slug($request->input('title')),
+                'title' => $request->input('title'),
+                'content' => $request->input('content'),
+                'status' => $request->input('status'),
+
+            ]);
+        return \response()->json([
+            'message' => 'updated'
+        ], 200);
     }
 }
