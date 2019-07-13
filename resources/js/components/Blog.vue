@@ -14,47 +14,36 @@
                 </div>
             </div>
             <br>
-              <div class="card-action">
-                  <button  class="btn btn-primary ml-4" @click.prevent="activeBlogs">
-                      <i class="fa fa-edit">Active Blogs </i>
-                  </button>
-              </div>
+
             <div class="card-body">
                 <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
 
                     <div class="row">
                         <div class="col-sm-12">
                             <table id="example1" class="table table-bordered table-striped dataTable" role="grid"
-                                   aria-describedby="example1_info">
+                            >
                                 <thead>
                                 <tr role="row">
-                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
-                                        colspan="1"
-                                        aria-sort="ascending"
-                                        aria-label="Rendering engine: activate to sort column descending"
-                                        style="width: 203.4px;">
+                                    <th>
                                         <i class="fa fa-tags"></i> Title
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="Browser: activate to sort column ascending" style="width: 262.6px;">
+                                    <th>
                                         <i class="fa fa-blog"></i>
                                         Content
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="Platform(s): activate to sort column ascending"
-                                        style="width: 233px;">
+                                    <th>
                                         <i class="fa fa-image"></i>
                                         Featured Image
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="Platform(s): activate to sort column ascending"
-                                        style="width: 33px;">
+                                    <th @click="sort_by_status">
                                         <i class="fa fa-circle-o-notch"></i>
                                         Status
+                                        <span>
+                                            <i class="fa fa-arrow-up float-right"></i>
+                                            <i class="fa fa-arrow-down float-right"></i>
+                                        </span>
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="CSS grade: activate to sort column ascending"
-                                        style="width: 123.6px;">
+                                    <th>
                                         <i class="fa fa-edit"></i>
                                         Modify
                                     </th>
@@ -64,14 +53,15 @@
 
 
                                 <tr role="row" class="odd"
-                                    v-for="(blog, $index) in blogs"
-                                    :key="$index"
+                                    v-for="blog in blogs"
+                                    :key="blog.id"
                                 >
-                                    <td>
-                                        {{blog.title}}
-                                    </td>
-                                    <td v-html="blog.content.substr(0,100)" title="blog.content"></td>
-                                    <td><img src="uploads/" alt="">{{blog.featured_image}}</td>
+                                    <td v-html="blog.title.substr(0,20)"></td>
+                                    <td v-html="blog.content.substr(0,50)" :title="blog.content" @mouseenter="showContent"></td>
+                                    <td><img :src="'uploads/images/original/' +blog.featured_image" 
+                                             :alt="blog.title"
+                                             style="height: 100px;overflow: hidden;"
+                                    ></td>
                                     <td>{{blog.status}}</td>
                                     <td>
                                         <div class="btn-group">
@@ -103,7 +93,6 @@
                 </div>
             </div>
         </div>
-
         <div class="modal fade" id="addBlogModel" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
              aria-hidden="true">
             <div class="modal-dialog modal-full" role="document">
@@ -177,7 +166,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 <script>
@@ -200,6 +188,7 @@
                 blogs: [],
                 page: 1,
                 editMode: true,
+                ascending: false,
                 form: new Form({
                     title: '',
                     content: '',
@@ -211,6 +200,9 @@
             }
         },
         methods: {
+            showContent(){
+
+            },
             updateBlog() {
 
             },
@@ -258,7 +250,7 @@
 
             },
             editModal(slug) {
-                this.editMode=true;
+                this.editMode = true;
                 this.form.fill(slug);
                 $('#addBlogModel').modal('show');
 
@@ -312,10 +304,20 @@
                         }
                     });
             },
-            activeBlogs(){
-                  return this.blogs.filter(data =>data.status===1);
+            sort_by_status() {
+                this.ascending = !this.ascending;
+                if (this.ascending === true) {
+                    this.blogs.sort((a, b) => {
+                        return parseInt(a.status) - (b.status);
+                    })
+                } else {
+                    this.blogs.sort((a, b) => {
+                        return parseInt(b.status) - (a.status);
+                    })
 
+                }
             }
+
         },
         mounted() {
             this.$store.dispatch('fetchBlog');

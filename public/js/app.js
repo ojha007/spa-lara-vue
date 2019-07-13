@@ -1913,18 +1913,6 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -1941,6 +1929,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       blogs: [],
       page: 1,
       editMode: true,
+      ascending: false,
       form: new vform__WEBPACK_IMPORTED_MODULE_0__["Form"]({
         title: '',
         content: '',
@@ -1952,6 +1941,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     };
   },
   methods: {
+    showContent: function showContent() {},
     updateBlog: function updateBlog() {},
     addBlog: function addBlog() {
       var _this = this;
@@ -2052,10 +2042,18 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }
       });
     },
-    activeBlogs: function activeBlogs() {
-      return this.blogs.filter(function (data) {
-        return data.status === 1;
-      });
+    sort_by_status: function sort_by_status() {
+      this.ascending = !this.ascending;
+
+      if (this.ascending === true) {
+        this.blogs.sort(function (a, b) {
+          return parseInt(a.status) - b.status;
+        });
+      } else {
+        this.blogs.sort(function (a, b) {
+          return parseInt(b.status) - a.status;
+        });
+      }
     }
   },
   mounted: function mounted() {
@@ -2238,6 +2236,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Brand',
@@ -2250,7 +2257,8 @@ __webpack_require__.r(__webpack_exports__);
       ascending: false,
       form: new vform__WEBPACK_IMPORTED_MODULE_0___default.a({
         name: '',
-        display_order: ''
+        display_order: '',
+        image: ''
       })
     };
   },
@@ -2263,7 +2271,22 @@ __webpack_require__.r(__webpack_exports__);
           return parseInt(a.display_order) - parseInt(b.display_order);
         });
       } else {
-        return this.brands;
+        this.brands.sort(function (a, b) {
+          return parseInt(b.display_order) - parseInt(a.display_order);
+        });
+      }
+    },
+    display_order_by_name: function display_order_by_name() {
+      this.ascending = !this.ascending;
+
+      if (this.ascending === true) {
+        this.brands.sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        });
+      } else {
+        this.brands.sort(function (a, b) {
+          return b.name.localeCompare(a.name);
+        });
       }
     },
     infiniteHandler: function infiniteHandler($state) {
@@ -2839,6 +2862,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'Product',
@@ -2846,6 +2887,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       changeProduct: 1,
       products: [],
+      ascending: true,
       page: 1,
       form: new vform__WEBPACK_IMPORTED_MODULE_0___default.a({
         name: '',
@@ -2860,6 +2902,45 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    sort_by_status: function sort_by_status() {
+      this.ascending = !this.ascending;
+
+      if (this.ascending === true) {
+        this.products.sort(function (a, b) {
+          return parseInt(a.status) - parseInt(b.status);
+        });
+      } else {
+        this.products.sort(function (a, b) {
+          return parseInt(b.status) - parseInt(a.status);
+        });
+      }
+    },
+    sort_by_name: function sort_by_name() {
+      this.ascending = !this.ascending;
+
+      if (this.ascending === true) {
+        this.products.sort(function (a, b) {
+          return a.name.localeCompare(b.name);
+        });
+      } else {
+        this.products.sort(function (a, b) {
+          return b.name.localeCompare(a.name);
+        });
+      }
+    },
+    sort_by_views: function sort_by_views() {
+      this.ascending = !this.ascending;
+
+      if (this.ascending === true) {
+        this.products.sort(function (a, b) {
+          return parseInt(a.views) - parseInt(b.views);
+        });
+      } else {
+        this.products.sort(function (a, b) {
+          return parseInt(b.views) - parseInt(a.views);
+        });
+      }
+    },
     infiniteHandler: function infiniteHandler($state) {
       var vm = this;
       axios.get('api/v1/product', {
@@ -30622,22 +30703,6 @@ var render = function() {
       _vm._v(" "),
       _c("br"),
       _vm._v(" "),
-      _c("div", { staticClass: "card-action" }, [
-        _c(
-          "button",
-          {
-            staticClass: "btn btn-primary ml-4",
-            on: {
-              click: function($event) {
-                $event.preventDefault()
-                return _vm.activeBlogs($event)
-              }
-            }
-          },
-          [_c("i", { staticClass: "fa fa-edit" }, [_vm._v("Active Blogs ")])]
-        )
-      ]),
-      _vm._v(" "),
       _c("div", { staticClass: "card-body" }, [
         _c(
           "div",
@@ -30652,47 +30717,68 @@ var render = function() {
                   "table",
                   {
                     staticClass: "table table-bordered table-striped dataTable",
-                    attrs: {
-                      id: "example1",
-                      role: "grid",
-                      "aria-describedby": "example1_info"
-                    }
+                    attrs: { id: "example1", role: "grid" }
                   },
                   [
-                    _vm._m(1),
+                    _c("thead", [
+                      _c("tr", { attrs: { role: "row" } }, [
+                        _vm._m(1),
+                        _vm._v(" "),
+                        _vm._m(2),
+                        _vm._v(" "),
+                        _vm._m(3),
+                        _vm._v(" "),
+                        _c("th", { on: { click: _vm.sort_by_status } }, [
+                          _c("i", { staticClass: "fa fa-circle-o-notch" }),
+                          _vm._v(
+                            "\n                                    Status\n                                    "
+                          ),
+                          _vm._m(4)
+                        ]),
+                        _vm._v(" "),
+                        _vm._m(5)
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c(
                       "tbody",
                       [
-                        _vm._l(_vm.blogs, function(blog, $index) {
+                        _vm._l(_vm.blogs, function(blog) {
                           return _c(
                             "tr",
                             {
-                              key: $index,
+                              key: blog.id,
                               staticClass: "odd",
                               attrs: { role: "row" }
                             },
                             [
-                              _c("td", [
-                                _vm._v(
-                                  "\n                                    " +
-                                    _vm._s(blog.title) +
-                                    "\n                                "
-                                )
-                              ]),
+                              _c("td", {
+                                domProps: {
+                                  innerHTML: _vm._s(blog.title.substr(0, 20))
+                                }
+                              }),
                               _vm._v(" "),
                               _c("td", {
-                                attrs: { title: "blog.content" },
+                                attrs: { title: blog.content },
                                 domProps: {
-                                  innerHTML: _vm._s(blog.content.substr(0, 100))
-                                }
+                                  innerHTML: _vm._s(blog.content.substr(0, 50))
+                                },
+                                on: { mouseenter: _vm.showContent }
                               }),
                               _vm._v(" "),
                               _c("td", [
                                 _c("img", {
-                                  attrs: { src: "uploads/", alt: "" }
-                                }),
-                                _vm._v(_vm._s(blog.featured_image))
+                                  staticStyle: {
+                                    height: "100px",
+                                    overflow: "hidden"
+                                  },
+                                  attrs: {
+                                    src:
+                                      "uploads/images/original/" +
+                                      blog.featured_image,
+                                    alt: blog.title
+                                  }
+                                })
                               ]),
                               _vm._v(" "),
                               _c("td", [_vm._v(_vm._s(blog.status))]),
@@ -30792,7 +30878,7 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _vm._m(2)
+                _vm._m(6)
               ]),
               _vm._v(" "),
               _c(
@@ -30991,7 +31077,7 @@ var render = function() {
                   ]),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-footer" }, [
-                    _vm._m(3),
+                    _vm._m(7),
                     _vm._v(" "),
                     _c(
                       "button",
@@ -31031,113 +31117,52 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", { attrs: { role: "row" } }, [
-        _c(
-          "th",
-          {
-            staticClass: "sorting_asc",
-            staticStyle: { width: "203.4px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-sort": "ascending",
-              "aria-label":
-                "Rendering engine: activate to sort column descending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-tags" }),
-            _vm._v(" Title\n                                ")
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "262.6px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "Browser: activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-blog" }),
-            _vm._v(
-              "\n                                    Content\n                                "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "233px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "Platform(s): activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-image" }),
-            _vm._v(
-              "\n                                    Featured Image\n                                "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "33px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "Platform(s): activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-circle-o-notch" }),
-            _vm._v(
-              "\n                                    Status\n                                "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "123.6px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "CSS grade: activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-edit" }),
-            _vm._v(
-              "\n                                    Modify\n                                "
-            )
-          ]
-        )
-      ])
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-tags" }),
+      _vm._v(" Title\n                                ")
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-blog" }),
+      _vm._v(
+        "\n                                    Content\n                                "
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-image" }),
+      _vm._v(
+        "\n                                    Featured Image\n                                "
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-arrow-up float-right" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-arrow-down float-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-edit" }),
+      _vm._v(
+        "\n                                    Modify\n                                "
+      )
     ])
   },
   function() {
@@ -31233,7 +31258,7 @@ var render = function() {
                 _c(
                   "table",
                   {
-                    staticClass: "table table-bordered table-striped dataTable",
+                    staticClass: "table table-bordered  dataTable",
                     attrs: {
                       id: "example1",
                       role: "grid",
@@ -31243,22 +31268,36 @@ var render = function() {
                   [
                     _c("thead", [
                       _c("tr", { attrs: { role: "row" } }, [
-                        _vm._m(1),
+                        _c(
+                          "th",
+                          {
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.display_order_by_name($event)
+                              }
+                            }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-tags" }),
+                            _vm._v(
+                              " Brand Name\n                                    "
+                            ),
+                            _vm._m(1)
+                          ]
+                        ),
                         _vm._v(" "),
                         _vm._m(2),
                         _vm._v(" "),
                         _c(
                           "th",
                           {
-                            staticClass: "sorting",
-                            staticStyle: { width: "200px" },
-                            attrs: {
-                              tabindex: "0",
-                              "aria-controls": "example1",
-                              rowspan: "1",
-                              colspan: "1",
-                              "aria-label":
-                                "Platform(s): activate to sort column ascending"
+                            staticStyle: { cursor: "pointer", width: "200px" },
+                            on: {
+                              click: function($event) {
+                                $event.preventDefault()
+                                return _vm.display_Odering($event)
+                              }
                             }
                           },
                           [
@@ -31266,111 +31305,85 @@ var render = function() {
                             _vm._v(
                               "\n                                    Display Order\n                                    "
                             ),
-                            _c(
-                              "span",
-                              {
-                                staticStyle: { cursor: "pointer" },
-                                on: {
-                                  click: function($event) {
-                                    $event.preventDefault()
-                                    return _vm.display_Odering($event)
-                                  }
-                                }
-                              },
-                              [
-                                _c("i", {
-                                  staticClass: "fa fa-arrow-up float-right"
-                                }),
-                                _vm._v(" "),
-                                _c("i", {
-                                  staticClass: "fa fa-arrow-down float-right"
-                                })
-                              ]
-                            )
+                            _vm._m(3)
                           ]
                         ),
                         _vm._v(" "),
-                        _vm._m(3)
+                        _vm._m(4)
                       ])
                     ]),
                     _vm._v(" "),
                     _c(
                       "tbody",
-                      _vm._l(_vm.brands, function(brand, index) {
-                        return _c(
-                          "tr",
-                          {
-                            key: brand.id,
-                            staticClass: "odd",
-                            attrs: { role: "row" }
-                          },
-                          [
-                            _c("td", [
-                              _vm._v(
-                                "\n                                    " +
-                                  _vm._s(brand.name) +
-                                  "\n                                "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _vm._v(
-                                "\n                                    " +
-                                  _vm._s(brand.featured_image) +
-                                  "\n                                "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _vm._v(
-                                "\n                                    " +
-                                  _vm._s(brand.display_order) +
-                                  "\n                                "
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c("td", [
-                              _c("div", { staticClass: "btn-group" }, [
-                                _c("i", {
-                                  staticClass: "fa fa-eye yellow",
-                                  attrs: { title: "Detail" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.brandDetail(brand.id)
-                                    }
+                      _vm._l(_vm.brands, function(brand) {
+                        return _c("tr", { key: brand.id }, [
+                          _c("td", [
+                            _vm._v(
+                              "\n                                    " +
+                                _vm._s(brand.name) +
+                                "\n                                "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c("img", {
+                              staticStyle: { height: "100px" },
+                              attrs: {
+                                src: "/uploads/images/original/" + brand.image,
+                                alt: brand.name
+                              }
+                            })
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _vm._v(
+                              "\n                                    " +
+                                _vm._s(brand.display_order) +
+                                "\n                                "
+                            )
+                          ]),
+                          _vm._v(" "),
+                          _c("td", [
+                            _c("div", { staticClass: "btn-group" }, [
+                              _c("i", {
+                                staticClass: "fa fa-eye yellow",
+                                attrs: { title: "Detail" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.brandDetail(brand.id)
                                   }
-                                }),
-                                _vm._v(
-                                  "\n                                           \n                                        "
-                                ),
-                                _c("i", {
-                                  staticClass: "fa fa-edit green",
-                                  attrs: { title: "Edit" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.editModal(brand)
-                                    }
+                                }
+                              }),
+                              _vm._v(
+                                "\n                                           \n                                        "
+                              ),
+                              _c("i", {
+                                staticClass: "fa fa-edit green",
+                                attrs: { title: "Edit" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.editModal(brand)
                                   }
-                                }),
-                                _vm._v(
-                                  "\n                                           \n                                        "
-                                ),
-                                _c("i", {
-                                  staticClass: "fa fa-trash red",
-                                  attrs: { title: "Delete" },
-                                  on: {
-                                    click: function($event) {
-                                      $event.preventDefault()
-                                      return _vm.deleteBrand(brand.id)
-                                    }
+                                }
+                              }),
+                              _vm._v(
+                                "\n                                           \n                                        "
+                              ),
+                              _c("i", {
+                                staticClass: "fa fa-trash red",
+                                attrs: { title: "Delete" },
+                                on: {
+                                  click: function($event) {
+                                    $event.preventDefault()
+                                    return _vm.deleteBrand(brand.id)
                                   }
-                                })
-                              ])
+                                }
+                              })
                             ])
-                          ]
-                        )
+                          ])
+                        ])
                       }),
                       0
                     )
@@ -31413,7 +31426,7 @@ var render = function() {
                     ])
                   : _c("h5", [_vm._v("Brand Detail ")]),
                 _vm._v(" "),
-                _vm._m(4)
+                _vm._m(5)
               ]),
               _vm._v(" "),
               _c(
@@ -31513,9 +31526,25 @@ var render = function() {
                                       }
                                     })
                                   : _vm._e()
-                              ]),
-                              _vm._v(" "),
-                              _c("div", { staticClass: "well" })
+                              ])
+                            ])
+                          ]),
+                          _vm._v(" "),
+                          _c("tr", [
+                            _c("th", [_vm._v("Brand Image")]),
+                            _vm._v(" "),
+                            _c("td", [
+                              !_vm.viewMode
+                                ? _c("img", {
+                                    staticStyle: { height: "100px" },
+                                    attrs: {
+                                      src:
+                                        "/uploads/images/original/" +
+                                        _vm.form.image,
+                                      alt: _vm.form.name
+                                    }
+                                  })
+                                : _vm._e()
                             ])
                           ])
                         ])
@@ -31523,7 +31552,27 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(5)
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _vm._m(6),
+                    _vm._v(" "),
+                    !_vm.viewMode
+                      ? _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-success",
+                            attrs: { type: "submit" }
+                          },
+                          [
+                            _c("i", { staticClass: "fa fa-save" }),
+                            _vm._v(
+                              " " +
+                                _vm._s(_vm.editMode ? "Update" : "Add") +
+                                "\n                        "
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  ])
                 ]
               )
             ])
@@ -31546,75 +31595,43 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "th",
-      {
-        staticClass: "sorting_asc",
-        staticStyle: { width: "203.4px" },
-        attrs: {
-          tabindex: "0",
-          "aria-controls": "example1",
-          rowspan: "1",
-          colspan: "1",
-          "aria-sort": "ascending",
-          "aria-label": "Rendering engine: activate to sort column descending"
-        }
-      },
-      [
-        _c("i", { staticClass: "fa fa-tags" }),
-        _vm._v(" Brand Name\n                                ")
-      ]
-    )
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-arrow-up float-right" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-arrow-down float-right" })
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "th",
-      {
-        staticClass: "sorting",
-        staticStyle: { width: "200px" },
-        attrs: {
-          tabindex: "0",
-          "aria-controls": "example1",
-          rowspan: "1",
-          colspan: "1",
-          "aria-label": "Platform(s): activate to sort column ascending"
-        }
-      },
-      [
-        _c("i", { staticClass: "fa fa-image" }),
-        _vm._v(
-          "\n                                    Featured Image\n                                "
-        )
-      ]
-    )
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-image" }),
+      _vm._v(
+        "\n                                    Featured Image\n                                "
+      )
+    ])
   },
   function() {
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c(
-      "th",
-      {
-        staticClass: "sorting",
-        staticStyle: { width: "123.6px" },
-        attrs: {
-          tabindex: "0",
-          "aria-controls": "example1",
-          rowspan: "1",
-          colspan: "1",
-          "aria-label": "CSS grade: activate to sort column ascending"
-        }
-      },
-      [
-        _c("i", { staticClass: "fa fa-edit" }),
-        _vm._v(
-          "\n                                    Modify\n                                "
-        )
-      ]
-    )
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-arrow-up float-right" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-arrow-down float-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-edit" }),
+      _vm._v(
+        "\n                                    Modify\n                                "
+      )
+    ])
   },
   function() {
     var _vm = this
@@ -31637,28 +31654,17 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-footer" }, [
-      _c(
-        "button",
-        {
-          staticClass: "btn btn-danger",
-          attrs: { type: "button", "data-dismiss": "modal" }
-        },
-        [
-          _c("i", { staticClass: "fa  fa-close green" }),
-          _vm._v(" Close\n                        ")
-        ]
-      ),
-      _vm._v(" "),
-      _c(
-        "button",
-        { staticClass: "btn btn-success", attrs: { type: "submit" } },
-        [
-          _c("i", { staticClass: "fa fa-save" }),
-          _vm._v(" Save\n                        ")
-        ]
-      )
-    ])
+    return _c(
+      "button",
+      {
+        staticClass: "btn btn-danger",
+        attrs: { type: "button", "data-dismiss": "modal" }
+      },
+      [
+        _c("i", { staticClass: "fa  fa-close green" }),
+        _vm._v(" Close\n                        ")
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -32144,7 +32150,39 @@ var render = function() {
                     }
                   },
                   [
-                    _vm._m(1),
+                    _c("thead", [
+                      _c("tr", { attrs: { role: "row" } }, [
+                        _c("th", { on: { click: _vm.sort_by_name } }, [
+                          _c("i", { staticClass: "fa fa-tags" }),
+                          _vm._v(
+                            " Product Name\n                                    "
+                          ),
+                          _vm._m(1)
+                        ]),
+                        _vm._v(" "),
+                        _vm._m(2),
+                        _vm._v(" "),
+                        _vm._m(3),
+                        _vm._v(" "),
+                        _c("th", { on: { click: _vm.sort_by_status } }, [
+                          _c("i", { staticClass: "fa fa-star" }),
+                          _vm._v(
+                            "\n                                    Status\n                                    "
+                          ),
+                          _vm._m(4)
+                        ]),
+                        _vm._v(" "),
+                        _c("th", { on: { click: _vm.sort_by_views } }, [
+                          _c("i", { staticClass: "fa fa-tags" }),
+                          _vm._v(
+                            " Total Views\n                                    "
+                          ),
+                          _vm._m(5)
+                        ]),
+                        _vm._v(" "),
+                        _vm._m(6)
+                      ])
+                    ]),
                     _vm._v(" "),
                     _c(
                       "tbody",
@@ -32167,9 +32205,21 @@ var render = function() {
                               ]),
                               _vm._v(" "),
                               _c("td", [
+                                _c("img", {
+                                  staticStyle: { height: "100px" },
+                                  attrs: {
+                                    src:
+                                      "uploads/images/medium/" +
+                                      product.featured_image,
+                                    alt: product.featured_image
+                                  }
+                                })
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
                                 _vm._v(
                                   "\n                                    " +
-                                    _vm._s(product.featured_image) +
+                                    _vm._s(product.brand.name) +
                                     "\n                                "
                                 )
                               ]),
@@ -32177,7 +32227,15 @@ var render = function() {
                               _c("td", [
                                 _vm._v(
                                   "\n                                    " +
-                                    _vm._s(product.brand.name) +
+                                    _vm._s(product.status) +
+                                    "\n                                "
+                                )
+                              ]),
+                              _vm._v(" "),
+                              _c("td", [
+                                _vm._v(
+                                  "\n                                    " +
+                                    _vm._s(product.views) +
                                     "\n                                "
                                 )
                               ]),
@@ -32278,7 +32336,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content modal-margin-left" }, [
-              _vm._m(2),
+              _vm._m(7),
               _vm._v(" "),
               _c(
                 "form",
@@ -32468,7 +32526,7 @@ var render = function() {
                     ])
                   ]),
                   _vm._v(" "),
-                  _vm._m(3)
+                  _vm._m(8)
                 ]
               )
             ])
@@ -32498,7 +32556,7 @@ var render = function() {
           },
           [
             _c("div", { staticClass: "modal-content modal-margin-left" }, [
-              _vm._m(4),
+              _vm._m(9),
               _vm._v(" "),
               _c("div", { staticClass: "modal-body" }, [
                 _c(
@@ -32564,7 +32622,7 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _vm._m(5)
+              _vm._m(10)
             ])
           ]
         )
@@ -32585,92 +32643,63 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", { attrs: { role: "row" } }, [
-        _c(
-          "th",
-          {
-            staticClass: "sorting_asc",
-            staticStyle: { width: "203.4px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-sort": "ascending",
-              "aria-label":
-                "Rendering engine: activate to sort column descending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-tags" }),
-            _vm._v(" Product Name\n                                ")
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "233px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "Platform(s): activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-image" }),
-            _vm._v(
-              "\n                                    Featured Image\n                                "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "123.6px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "CSS grade: activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-tags" }),
-            _vm._v(
-              "\n                                    Brand Name\n                                "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass: "sorting",
-            staticStyle: { width: "123.6px" },
-            attrs: {
-              tabindex: "0",
-              "aria-controls": "example1",
-              rowspan: "1",
-              colspan: "1",
-              "aria-label": "CSS grade: activate to sort column ascending"
-            }
-          },
-          [
-            _c("i", { staticClass: "fa fa-edit" }),
-            _vm._v(
-              "\n                                    Modify\n                                "
-            )
-          ]
-        )
-      ])
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-arrow-down float-right" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-arrow-up float-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-image" }),
+      _vm._v(
+        "\n                                    Featured Image\n                                "
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-tags" }),
+      _vm._v(
+        "\n                                    Brand Name\n                                "
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-arrow-down float-right" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-arrow-up float-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", [
+      _c("i", { staticClass: "fa fa-arrow-down float-right" }),
+      _vm._v(" "),
+      _c("i", { staticClass: "fa fa-arrow-up float-right" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("th", [
+      _c("i", { staticClass: "fa fa-edit" }),
+      _vm._v(
+        "\n                                    Modify\n                                "
+      )
     ])
   },
   function() {
