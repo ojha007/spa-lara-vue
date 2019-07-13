@@ -5,83 +5,41 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 
 class AuthenticationController extends Controller
 {
-    public function __construct()
+    public function showLoginForm()
     {
-        $this->middleware('auth:jwt', ['except' => ['login', 'register']]);
+        return view('login');
     }
 
-
-    public function login(Request $request)
+    public function showRegisterForm()
     {
-        $credentials = $request->only('email', 'password');
-        if ($token = $this->guard()->attempt($credentials)) {
-            return $this->respondWithToken($token);
-        }
-        return response()->json(['error' => 'Unauthorized'], 401);
-    }
-
-    public function register(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|unique:users|string|max:191',
-            'username' => 'required|max:191|min:8|string',
-            'password' => 'required|confirmed|min:6',
-        ]);
-        $user = User::create([
-            'email' => $request->input('email'),
-            'name' => $request->input('username'),
-            'password' => bcrypt($request->input('password')),
-            'role_id' => 1,
-        ]);
-        if ($user) {
-            return $this->login($request);
-
-        }
-        return response()->json([
-            'status' => Response::HTTP_EXPECTATION_FAILED,
-            'message' => 'Something Went Wrong'
-        ]);
-
-
-    }
-
-    public function me()
-    {
-        return response()->json(auth()->user());
+        return view('register');
     }
 
     public function logout()
     {
-        auth()->logout();
 
-        return response()->json(['message' => 'Successfully logged out']);
     }
 
-
-    public function refresh()
+    public function login(Request $request)
     {
-        return $this->respondWithToken(auth()->refresh());
-    }
+        $credentials = $request->only('email', 'password');
+        $email = $request->input('email');
+        $password = $request->input('password');
+        $check = User::where('email', $email)->first();
+        if (!$check) {
+            return 'No Email Found';
+        }
+        if (Hash::check($check->password, $password)) {
+            return response()->json([
+                'token'
+            ],200);
+        }
 
-
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' =>60
-        ]);
-    }
-
-    protected function guard()
-    {
-        return Auth::guard();
     }
 
 

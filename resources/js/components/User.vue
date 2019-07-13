@@ -57,13 +57,6 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <pacman-loader
-                                    :loading="loading"
-                                    :color="color"
-                                    :size="size">
-
-                                </pacman-loader>
-
                                 <tr role="row" class="odd"
                                     v-for="user in users"
                                     :key="user.id"
@@ -93,61 +86,7 @@
                             </table>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12 col-md-5">
-                            <div class="dataTables_info" id="example1_info" role="status" aria-live="polite">Showing 1
-                                to 10
-                                of 57 entries
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-7">
-                            <div class="dataTables_paginate paging_simple_numbers" id="example1_paginate">
-                                <ul class="pagination">
-                                    <li class="paginate_button page-item previous disabled" id="example1_previous">
-                                        <a
-                                            href="#" aria-controls="example1" data-dt-idx="0" tabindex="0"
-                                            class="page-link">
-                                            Previous</a>
-                                    </li>
-                                    <li class="paginate_button page-item active">
-                                        <a href="#" aria-controls="example1"
-                                           data-dt-idx="1" tabindex="0"
-                                           class="page-link">1</a>
-                                    </li>
-                                    <li class="paginate_button page-item ">
-                                        <a href="#" aria-controls="example1"
-                                           data-dt-idx="2" tabindex="0"
-                                           class="page-link">2</a>
-                                    </li>
-                                    <li class="paginate_button page-item ">
-                                        <a href="#" aria-controls="example1"
-                                           data-dt-idx="3" tabindex="0"
-                                           class="page-link">3</a>
-                                    </li>
-                                    <li class="paginate_button page-item ">
-                                        <a href="#" aria-controls="example1"
-                                           data-dt-idx="4" tabindex="0"
-                                           class="page-link">4</a></li>
-                                    <li class="paginate_button page-item ">
-                                        <a href="#" aria-controls="example1"
-                                           data-dt-idx="5" tabindex="0"
-                                           class="page-link">5</a></li>
-                                    <li class="paginate_button page-item ">
-                                        <a href="#" aria-controls="example1"
-                                           data-dt-idx="6" tabindex="0"
-                                           class="page-link">6</a>
-                                    </li>
-                                    <li class="paginate_button page-item next" id="example1_next">
-                                        <a href="#"
-                                           aria-controls="example1"
-                                           data-dt-idx="7"
-                                           tabindex="0"
-                                           class="page-link">Next</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -159,16 +98,16 @@
                     <div class="modal-header">
                         <h5 class="modal-title">
                             <i class="fa fa-user-plus"></i>
-                            Add New User
+                            {{ editMode ? 'Update': 'Add' }} User
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <form @submit.prevent="storeUser">
+                    <form @submit.prevent=" editMode ? updateUser() : addUser()">
                         <div class="modal-body">
                             <div class="container-fluid">
-                                <alert-error :form="form"></alert-error>
+                                <alert-error :form="form" message="Your changes have been saved!"></alert-error>
                                 <div class="form-group">
                                     <i class="fa fa-mail-bulk"></i>
                                     <label for="email">Email</label>
@@ -177,8 +116,7 @@
                                            required
                                            v-model="form.email"
                                            class="form-control"
-                                           :class="{ 'is-invalid': form.errors.has('email') }"
-                                           aria-describedby="emailHelpId"
+                                           :class="{ 'is-invalid': form.errors.get('email') }"
                                            placeholder="Enter Email Here ?">
                                     <has-error :form="form" field="email"></has-error>
                                 </div>
@@ -237,10 +175,9 @@
                                     <label for="password">Password</label>
                                     <input type="password" class="form-control"
                                            required name="password" id="password"
-                                           aria-describedby="PasswordHelpId"
                                            placeholder="Enter Password Here?"
                                            v-model="form.password"
-                                           :class="{ 'is-invalid': form.errors.has('password') }">
+                                           :class="{ 'is-invalid': form.errors.get('password') }">
                                     <has-error :form="form" field="password"></has-error>
                                 </div>
                             </div>
@@ -250,7 +187,9 @@
                                 <i class="fa fa-close"></i> Close
                             </button>
                             <button type="submit" :disabled="form.busy" class="btn btn-success">
-                                <i class="fa fa-save"></i> Save
+                                <i class="fa fa-user-plus"></i>
+                                {{editMode ? 'Update': 'Add' }}
+
                             </button>
                         </div>
                     </form>
@@ -267,7 +206,8 @@
 <script>
     import Vue from 'vue';
     import axios from 'axios';
-    import {Form, HasError, AlertError} from 'vform';
+    import Form from 'vform';
+    import {HasError, AlertError} from 'vform';
     import PacmanLoader from 'vue-spinner/src/PacmanLoader';
 
     Vue.component(HasError.name, HasError);
@@ -281,11 +221,13 @@
         },
         data() {
             return {
+                editMode: true,
                 loading: true,
                 color: 'grey',
                 size: '15px',
                 model: true,
                 form: new Form({
+                    id: '',
                     name: '',
                     email: '',
                     password: '',
@@ -299,15 +241,12 @@
         },
         methods: {
             newModal() {
+                this.editMode = false;
                 this.form.reset();
                 $('#addUserModel').modal('show');
             },
-            editModal(user) {
-                $('#addUserModel').modal('show');
-                this.form.fill(user);
-
-            },
-            storeUser() {
+            addUser() {
+                this.editMode = false;
                 this.$Progress.start();
                 axios.post('api/v1/user', this.form)
                     .then(res => {
@@ -320,7 +259,6 @@
                                 display_name: res.data.role.display_name,
                             }
                         };
-                        console.log(payload);
                         this.$store.commit("ADD_USER", payload);
                         $('#addUserModel').modal('hide');
                         $('#addUserModel').reset();
@@ -331,14 +269,11 @@
                         })
                     })
                     .catch(err => {
-                        $('#addUserModel').modal('hide');
                         Toast.fire({
                             type: 'error',
                             title: 'Something went wrong'
                         });
                         this.$Progress.fail();
-
-
                     })
             },
             deleteUser(id) {
@@ -377,6 +312,26 @@
                     }
                 });
             },
+            updateUser() {
+                this.$Progress.start();
+                this.form.put('api/v1/user/' +this.form.id)
+                    .then(res => {
+                        $('#addUserModel').modal('hide');
+                        this.$Progress.finish();
+                        Toast.fire({
+                            type: 'success',
+                            title: 'User Created successfully'
+                        });
+                    }).catch(err => {
+                    this.$Progress.fail();
+
+                })
+            },
+            editModal(user) {
+                this.editMode = true;
+                $('#addUserModel').modal('show');
+                this.form.fill(user);
+            }
 
 
         },
@@ -388,7 +343,7 @@
 
         computed: {
             users() {
-               this.loading=false;
+                this.loading = false;
                 return this.$store.state.users;
             },
             roles() {

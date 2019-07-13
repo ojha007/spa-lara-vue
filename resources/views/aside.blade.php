@@ -77,12 +77,11 @@
                 </li>
 
                 <li class="nav-item">
-                    <router-link to="/login" class="nav-link">
-                        <i class="nav-icon fa fa-sign-out-alt"></i>
-                        <p>
-                            Logout
-                        </p>
-                    </router-link>
+                     <form action="{{route('logout')}}" method="post">
+                         @csrf
+                         <button type="submit">Logout</button>
+                     </form>
+
                 </li>
             </ul>
         </nav>
