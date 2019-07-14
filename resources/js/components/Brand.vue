@@ -5,8 +5,6 @@
                 <div class="card-title">
                     <h5> Brand Table</h5>
                 </div>
-
-
                 <div class="card-tools float-right">
                     <button class="btn btn-success" @click.prevent="newModal"
                     >
@@ -23,23 +21,15 @@
                             <table id="example1" class="table table-bordered table-striped dataTable" role="grid"
                                    aria-describedby="example1_info">
                                 <thead>
-                                <tr role="row">
-                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
-                                        colspan="1"
-                                        aria-sort="ascending"
-                                        aria-label="Rendering engine: activate to sort column descending"
-                                        style="width: 203.4px;">
+                                <tr>
+                                    <th>
                                         <i class="fa fa-tags"></i> Brand Name
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="Platform(s): activate to sort column ascending"
-                                        style="width: 200px;">
+                                    <th>
                                         <i class="fa fa-image"></i>
                                         Featured Image
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="Platform(s): activate to sort column ascending"
-                                        style="width: 200px;">
+                                    <th>
                                         <i class="fa fa-star"></i>
                                         Display Order
                                         <span @click.prevent="display_Odering" style="cursor: pointer;">
@@ -48,9 +38,7 @@
                                        </span>
                                     </th>
 
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="CSS grade: activate to sort column ascending"
-                                        style="width: 123.6px;">
+                                    <th>
                                         <i class="fa fa-edit"></i>
                                         Modify
                                     </th>
@@ -118,11 +106,15 @@
                                     <tbody>
                                     <tr>
                                         <th>Brand Title</th>
+
                                         <td>
                                             <div class="form-group">
                                                 <label></label>
                                                 <input type="text" name="name" class="form-control"
                                                        required v-model="form.name" v-if="!viewMode">
+                                                <div v-if="viewMode">
+                                                    <p>{{form.name}}</p>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
@@ -133,10 +125,9 @@
                                                 <label></label>
                                                 <input type="number" name="display_order" class="form-control"
                                                        required v-model="form.display_order" v-if="!viewMode">
-
-                                            </div>
-                                            <div class="well">
-
+                                                <p v-if="viewMode">
+                                                    {{form.display_order}}
+                                                </p>
                                             </div>
                                         </td>
                                     </tr>
@@ -170,7 +161,7 @@
                 page: 1,
                 editMode: true,
                 viewMode: false,
-                ascending:false,
+                ascending: false,
                 form: new Form({
                     name: '',
                     display_order: ''
@@ -183,14 +174,14 @@
         methods: {
             display_Odering() {
                 this.ascending = !this.ascending;
-                if(this.ascending===true){
-                    this.brands.sort( (a,b) => {
+                if (this.ascending === true) {
+                    this.brands.sort((a, b) => {
                         return parseInt(a.display_order) - parseInt(b.display_order);
-                    })}
-                    else{
-                        return this.brands;
-                    }
-                },
+                    })
+                } else {
+                    return this.brands;
+                }
+            },
             infiniteHandler($state) {
                 let vm = this;
                 axios.get('api/v1/product', {

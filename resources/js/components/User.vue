@@ -314,10 +314,14 @@
             },
             updateUser() {
                 this.$Progress.start();
-                this.form.put('api/v1/user/' +this.form.id)
+                this.form.put('api/v1/user/' + this.form.id, this.form)
                     .then(res => {
                         $('#addUserModel').modal('hide');
-                        this.$Progress.finish();
+
+                        console.log(this.form);
+                         // this.users.replace(user => {
+                         //     user.indexOf(user.id===this.form.id,this.form)
+                         // });
                         Toast.fire({
                             type: 'success',
                             title: 'User Created successfully'

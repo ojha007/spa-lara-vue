@@ -3,8 +3,6 @@
     import Dashboard from '../components/Dashboard';
     import Product from "../components/Product";
     import Blog from "../components/Blog";
-    import Login from "../components/Login";
-    import Register from "../components/Register";
     import Brand from "../components/Brand";
 
     const routes = [
@@ -25,21 +23,10 @@
             path: '/blog',
             component: Blog
         },
-
-        {
-            path: '/login',
-            component: Login
-        },
         {
             path: '/brand',
             component: Brand
         },
-        {
-            path: '/register',
-            component: Register
-        },
-
-
     ];
 
     export default routes;

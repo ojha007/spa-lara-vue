@@ -14,11 +14,11 @@
                 </div>
             </div>
             <br>
-              <div class="card-action">
-                  <button  class="btn btn-primary ml-4" @click.prevent="activeBlogs">
-                      <i class="fa fa-edit">Active Blogs </i>
-                  </button>
-              </div>
+            <div class="card-action">
+                <button class="btn btn-primary ml-4" @click.prevent="activeBlogs">
+                    <i class="fa fa-edit">Active Blogs </i>
+                </button>
+            </div>
             <div class="card-body">
                 <div id="example1_wrapper" class="dataTables_wrapper dt-bootstrap4">
 
@@ -209,8 +209,7 @@
                 }),
                 editor:
                 ClassicEditor,
-                editorConfig:
-                    {}
+                editorConfig:{}
             }
         },
         methods: {
@@ -282,19 +281,6 @@
                         });
                         this.$Progress.fail();
                     })
-            newModal() {
-                this.editMode = false;
-                this.form.reset();
-                $('#addBlogModel').modal('show');
-
-
-            },
-            editModal(slug) {
-                this.editMode=true;
-                this.form.fill(slug);
-                $('#addBlogModel').modal('show');
-
-
             },
             deleteBlog(slug) {
                 SwalDeleteAlert.fire({
@@ -344,6 +330,7 @@
                         }
                     });
             },
+
         },
         mounted() {
             this.$store.dispatch('fetchBlog');
