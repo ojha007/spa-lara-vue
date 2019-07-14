@@ -5,6 +5,8 @@
                 <div class="card-title">
                     <h5> Brand Table</h5>
                 </div>
+
+
                 <div class="card-tools float-right">
                     <button class="btn btn-success" @click.prevent="newModal"
                     >
@@ -18,18 +20,28 @@
 
                     <div class="row">
                         <div class="col-sm-12">
-                            <table id="example1" class="table table-bordered table-striped dataTable" role="grid"
+                            <table id="example1" class="table table-bordered  dataTable" role="grid"
                                    aria-describedby="example1_info">
                                 <thead>
                                 <tr>
                                     <th>
+                                <tr role="row">
+                                    <th @click.prevent="display_order_by_name">
                                         <i class="fa fa-tags"></i> Brand Name
+                                        <span>
+                                        <i class="fa fa-arrow-up float-right"></i>
+                                        <i class="fa fa-arrow-down float-right"></i>
+                                        </span>
+
                                     </th>
                                     <th>
                                         <i class="fa fa-image"></i>
                                         Featured Image
                                     </th>
                                     <th>
+                                    <th
+                                        @click.prevent="display_Odering" style="cursor: pointer;width: 200px;"
+                                    >
                                         <i class="fa fa-star"></i>
                                         Display Order
                                         <span @click.prevent="display_Odering" style="cursor: pointer;">
@@ -45,8 +57,8 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr role="row" class="odd"
-                                    v-for="(brand,index) in brands"
+                                <tr
+                                    v-for="brand in brands"
                                     :key="brand.id"
 
                                 >
@@ -54,7 +66,10 @@
                                         {{brand.name}}
                                     </td>
                                     <td>
-                                        {{brand.featured_image}}
+                                        <img :src=" '/uploads/images/original/' +brand.image"
+                                             :alt="brand.name"
+                                             style="height:100px"
+                                        >
                                     </td>
                                     <td>
                                         {{brand.display_order}}
@@ -106,7 +121,6 @@
                                     <tbody>
                                     <tr>
                                         <th>Brand Title</th>
-
                                         <td>
                                             <div class="form-group">
                                                 <label></label>
@@ -129,6 +143,20 @@
                                                     {{form.display_order}}
                                                 </p>
                                             </div>
+
+                                            </div>
+
+                                        </td>
+
+                                    </tr>
+                                    <tr>
+                                        <th>Brand Image</th>
+                                        <td>
+                                            <img :src=" '/uploads/images/original/' +form.image"
+                                                 :alt="form.name"
+                                                 style="height:100px"
+                                                 v-if="!viewMode"
+                                            >
                                         </td>
                                     </tr>
                                     </tbody>
@@ -139,8 +167,8 @@
                             <button type="button" class="btn btn-danger" data-dismiss="modal">
                                 <i class="fa  fa-close green"></i> Close
                             </button>
-                            <button type="submit" class="btn btn-success">
-                                <i class="fa fa-save"></i> Save
+                            <button type="submit" class="btn btn-success" v-if="!viewMode">
+                                <i class="fa fa-save"></i> {{editMode ? 'Update' :'Add'}}
                             </button>
                         </div>
                     </form>
@@ -164,7 +192,8 @@
                 ascending: false,
                 form: new Form({
                     name: '',
-                    display_order: ''
+                    display_order: '',
+                    image: '',
 
                 }),
 
@@ -179,7 +208,21 @@
                         return parseInt(a.display_order) - parseInt(b.display_order);
                     })
                 } else {
-                    return this.brands;
+                    this.brands.sort((a, b) => {
+                        return parseInt(b.display_order) - parseInt(a.display_order);
+                    })
+                }
+            },
+            display_order_by_name() {
+                this.ascending = !this.ascending;
+                if (this.ascending === true) {
+                    this.brands.sort((a, b) => {
+                        return (a.name).localeCompare(b.name);
+                    })
+                } else {
+                    this.brands.sort((a, b) => {
+                        return (b.name).localeCompare(a.name);
+                    })
                 }
             },
             infiniteHandler($state) {

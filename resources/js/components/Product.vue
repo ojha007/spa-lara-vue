@@ -31,28 +31,37 @@
                                    aria-describedby="example1_info">
                                 <thead>
                                 <tr role="row">
-                                    <th class="sorting_asc" tabindex="0" aria-controls="example1" rowspan="1"
-                                        colspan="1"
-                                        aria-sort="ascending"
-                                        aria-label="Rendering engine: activate to sort column descending"
-                                        style="width: 203.4px;">
+                                    <th @click="sort_by_name">
                                         <i class="fa fa-tags"></i> Product Name
+                                        <span>
+                                            <i class="fa fa-arrow-down float-right"></i>
+                                            <i class="fa fa-arrow-up float-right"></i>
+                                        </span>
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="Platform(s): activate to sort column ascending"
-                                        style="width: 233px;">
+                                    <th>
                                         <i class="fa fa-image"></i>
                                         Featured Image
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="CSS grade: activate to sort column ascending"
-                                        style="width: 123.6px;">
+                                    <th>
                                         <i class="fa fa-tags"></i>
                                         Brand Name
                                     </th>
-                                    <th class="sorting" tabindex="0" aria-controls="example1" rowspan="1" colspan="1"
-                                        aria-label="CSS grade: activate to sort column ascending"
-                                        style="width: 123.6px;">
+                                    <th @click="sort_by_status">
+                                        <i class="fa fa-star"></i>
+                                        Status
+                                        <span>
+                                            <i class="fa fa-arrow-down float-right"></i>
+                                            <i class="fa fa-arrow-up float-right"></i>
+                                        </span>
+                                    </th>
+                                    <th @click="sort_by_views">
+                                        <i class="fa fa-tags"></i> Total Views
+                                        <span>
+                                            <i class="fa fa-arrow-down float-right"></i>
+                                            <i class="fa fa-arrow-up float-right"></i>
+                                        </span>
+                                    </th>
+                                    <th>
                                         <i class="fa fa-edit"></i>
                                         Modify
                                     </th>
@@ -70,10 +79,19 @@
                                         {{product.name}}
                                     </td>
                                     <td>
-                                        {{product.featured_image}}
+                                        <img :src="'uploads/images/medium/' +product.featured_image"
+                                             :alt="product.featured_image"
+                                             style="height: 100px;">
+
                                     </td>
                                     <td>
                                         {{product.brand.name}}
+                                    </td>
+                                    <td>
+                                        {{product.status}}
+                                    </td>
+                                    <td>
+                                        {{product.views}}
                                     </td>
                                     <td>
                                         <div class="btn-group">
@@ -93,10 +111,10 @@
                                 </tr>
                                 <div style="overflow: auto;">
                                     <infinite-loading
-                                            :identifier="changeProduct"
-                                            @distance="100"
-                                            @infinite="infiniteHandler"
-                                            force-use-infinite-wrapper="true"></infinite-loading>
+                                        :identifier="changeProduct"
+                                        @distance="100"
+                                        @infinite="infiniteHandler"
+                                        force-use-infinite-wrapper="true"></infinite-loading>
                                 </div>
 
 
@@ -242,6 +260,7 @@
             return {
                 changeProduct: 1,
                 products: [],
+                ascending: true,
                 page: 1,
                 form: new Form({
                     name: '',
@@ -257,7 +276,42 @@
             }
         },
         methods: {
-
+            sort_by_status() {
+                this.ascending = !this.ascending;
+                if (this.ascending === true) {
+                    this.products.sort((a, b) => {
+                        return parseInt(a.status) - parseInt(b.status);
+                    })
+                } else {
+                    this.products.sort((a, b) => {
+                        return parseInt(b.status) - parseInt(a.status);
+                    })
+                }
+            },
+            sort_by_name() {
+                this.ascending = !this.ascending;
+                if (this.ascending === true) {
+                    this.products.sort((a, b) => {
+                        return (a.name).localeCompare(b.name);
+                    })
+                } else {
+                    this.products.sort((a, b) => {
+                        return (b.name).localeCompare(a.name);
+                    })
+                }
+            },
+            sort_by_views() {
+                this.ascending = !this.ascending;
+                if (this.ascending === true) {
+                    this.products.sort((a, b) => {
+                        return parseInt(a.views) - parseInt(b.views);
+                    })
+                } else {
+                    this.products.sort((a, b) => {
+                        return parseInt(b.views) - parseInt(a.views);
+                    })
+                }
+            },
             infiniteHandler($state) {
                 let vm = this;
                 axios.get('api/v1/product', {
